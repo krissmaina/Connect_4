@@ -110,6 +110,48 @@ class Board(tkinter.Canvas):
         elif player_color == 'red':
             self.player2_checkers.append(checker_id)
 
+    def generate_circle_names(self, circle_name: str) -> dict:
+        """
+        Generates horizontal, vertical and diagonal circle names from the `circle_name`.
+        There are 8 possible directions from the circle_name.
+
+        Horizontally: East and West
+        Vertically: North and South
+        Diagonally:
+            Main: North East and South West
+            Other: North West and South East
+
+        return: `dict` containing all the spaces in the 8 direction.
+        """
+        file, rank = circle_name[0], int(circle_name[1])
+
+        n = [f"{file}{r}" for r in range(rank+1, max(self.ranks) + 1)]
+        ne = [f"{chr(f)}{r}" for f, r in zip(range(ord(file)+1, ord(self.files[-1])+1), range(rank+1, self.ranks[0]+1))]
+        e = [f"{chr(f)}{rank}" for f in range(ord(file)+1, ord(self.files[-1])+1)]
+        se = [f"{chr(f)}{r}" for f, r in zip(range(ord(file)+1, ord(self.files[-1]) + 1), range(rank-1, 0, -1))]
+        s = [f"{file}{r}" for r in range(rank-1, 0, -1)]
+        sw = [f"{chr(f)}{r}" for f, r in zip(range(ord(file)-1, ord(self.files[0])-1, -1), range(rank-1, 0, -1))]
+        w = [f"{chr(f)}{rank}" for f in range(ord(file)-1, ord(self.files[0])-1, -1)]
+        nw = [f"{chr(f)}{r}" for f, r in zip(range(ord(file)-1, ord(self.files[0])-1, -1),
+                                             range(rank+1, self.ranks[0]+1))]
+
+        return {
+            "n": n,
+            "ne": ne,
+            "e": e,
+            "se": se,
+            "s": s,
+            "sw": sw,
+            "w": w,
+            "nw": nw,
+        }
+
+    def check_game_state(self):
+        """
+        Checks whether a player has 4 checkers in a row either horizontally, vertically or diagonally.
+        """
+        pass
+
 
 if __name__ == "__main__":
     root = tkinter.Tk()
