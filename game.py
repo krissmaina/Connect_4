@@ -59,7 +59,7 @@ class Board(tkinter.Canvas):
                 x1 = x0 + SQUARE_LENGTH
                 square_id = self.create_rectangle(x0, y0, x1, y1, fill='dark blue', outline="",
                                                   tags=f'square_in_{file}{rank}')
-                circle_id = self.create_oval(x0+5, y0+5, x1-5, y1-5, fill='cornflower blue',
+                circle_id = self.create_oval(x0+5, y0+5, x1-5, y1-5, fill='cornflower blue', outline="",
                                              tags=f'circle_in_{file}{rank}')
 
                 self.squares[square_id] = f"{file}{rank}"
@@ -128,7 +128,8 @@ class Board(tkinter.Canvas):
         x0, y0, x1, y1 = self.coords(circle_id)
 
         # place the checker in that circle
-        checker_id = self.create_oval(x0, y0, x1, y1, fill=player_color, tags=f"checker_in_{circle_name}")
+        checker_id = self.create_oval(x0, y0, x1, y1, fill=player_color, outline="",
+                                      tags=f"checker_in_{circle_name}")
         
         # add a highlight circle to the circle
         self.highlight_previous_move(circle_name)
@@ -151,7 +152,7 @@ class Board(tkinter.Canvas):
         circle_id = self.find_withtag(f"circle_in_{circle_name}")[0]
         x0, y0, x1, y1 = self.coords(circle_id)
 
-        highlight_circle = self.create_oval(x0+35, y0+35, x1-35, y1-35, fill='cornsilk')
+        highlight_circle = self.create_oval(x0+35, y0+35, x1-35, y1-35, fill='cornsilk', outline="")
         self.highlight_circle.append(highlight_circle)
 
     def generate_circle_names(self, circle_name: str) -> dict:
