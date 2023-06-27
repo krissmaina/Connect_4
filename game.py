@@ -1,8 +1,15 @@
 import tkinter
 from settings import *
+from PIL import Image, ImageTk
 
 
 class Board(tkinter.Canvas):
+
+    @staticmethod
+    def resize_image(image_path: str, width, height):
+        """Returns a resized image object."""
+        image = Image.open(image_path)
+        return ImageTk.PhotoImage(image.resize((width, height)))
 
     def __init__(self, window, width=BOARD_WIDTH, height=BOARD_HEIGHT, **kwargs):
         super().__init__(master=window, width=width, height=height, **kwargs)
@@ -31,6 +38,8 @@ class Board(tkinter.Canvas):
         self.bind("<Button-1>", self.on_click)
 
         self.highlight_circle = []
+        self.star_image = self.resize_image("images/star_image.png", 30, 30)
+        self.highlight_connect4_images = []
 
     def grid(self, row, column, **kwargs):
         super().grid(row=row, column=column, **kwargs)
@@ -88,6 +97,9 @@ class Board(tkinter.Canvas):
             if connect4:
                 print(f"{self.players[self.player1_turn][1]} has won!")
                 self.game_over = True
+
+                # highlight the connect 4
+                self.highlight_winning_connect4(connect4)
 
             # give the turn to the other player
             self.player1_turn = not self.player1_turn
@@ -262,11 +274,29 @@ class Board(tkinter.Canvas):
 
         return []   # no checkers are in connect 4
 
-    def highlight_winning_connect4(self):
+    def get_center_coordinates(self, circle_name: str):
+        """
+        Return the center co-ordinates of the `circle_name`.
+        """
+        circle_id = self.find_withtag(f"circle_in_{circle_name}")[0]
+
+        x0, y0, x1, y1 = self.coords(circle_id)
+        x_center = int((x0 + x1) / 2)
+        y_center = int((y0 + y1) / 2)
+
+        return x_center, y_center
+
+    def highlight_winning_connect4(self, connect4: list):
         """
         Highlights the circles that have won the game.
         """
-        pass
+        # delete previous highlight circle
+        self.delete(self.highlight_circle[0])
+
+        for circle_name in connect4:
+            x_center, y_center = self.get_center_coordinates(circle_name)
+            image_id = self.create_image(x_center, y_center, image=self.star_image)
+            self.highlight_connect4_images.append(image_id)
 
     def new_game(self):
         """
@@ -275,6 +305,7 @@ class Board(tkinter.Canvas):
         1. Delete all the players checkers.
         2. Set the game_over attribute to False.
         3. Give player1 the turn.
+        4. delete any highlighting circles or images
         """
 
         for p1_checker in self.player1_checkers:
@@ -286,6 +317,17 @@ class Board(tkinter.Canvas):
         self.player1_checkers, self.player2_checkers = [], []
         self.game_over = False
         self.player1_turn = True
+
+        for image_id in self.highlight_connect4_images:
+            self.delete(image_id)
+
+        # delete highlight circle if any
+        if self.highlight_circle:
+            self.delete(self.highlight_circle[0])
+
+        # reset the attributes
+        self.highlight_circle = []
+        self.highlight_connect4_images = []
 
 
 if __name__ == "__main__":
