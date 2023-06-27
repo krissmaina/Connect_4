@@ -242,6 +242,25 @@ class Board(tkinter.Canvas):
 
         return []   # no checkers are in connect 4
 
+    def new_game(self):
+        """
+        This method will reset the board and start a new game.
+
+        1. Delete all the players checkers.
+        2. Set the game_over attribute to False.
+        3. Give player1 the turn.
+        """
+
+        for p1_checker in self.player1_checkers:
+            self.delete(p1_checker)
+
+        for p2_checker in self.player2_checkers:
+            self.delete(p2_checker)
+
+        self.player1_checkers, self.player2_checkers = [], []
+        self.game_over = False
+        self.player1_turn = True
+
 
 if __name__ == "__main__":
     root = tkinter.Tk()
