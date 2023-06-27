@@ -30,6 +30,8 @@ class Board(tkinter.Canvas):
 
         self.bind("<Button-1>", self.on_click)
 
+        self.highlight_circle = []
+
     def grid(self, row, column, **kwargs):
         super().grid(row=row, column=column, **kwargs)
         self.draw_board()
@@ -115,12 +117,30 @@ class Board(tkinter.Canvas):
 
         # place the checker in that circle
         checker_id = self.create_oval(x0, y0, x1, y1, fill=player_color, tags=f"checker_in_{circle_name}")
+        
+        # add a highlight circle to the circle
+        self.highlight_previous_move(circle_name)
 
         # add the checker_id to its respective player list
         if player_color == 'yellow':
             self.player1_checkers.append(checker_id)
         elif player_color == 'red':
             self.player2_checkers.append(checker_id)
+
+    def highlight_previous_move(self, circle_name: str):
+        """
+        Highlight the previous move made.
+        """
+        # delete the previous highlight_circle
+        if self.highlight_circle:
+            self.delete(self.highlight_circle[0])
+            self.highlight_circle = []
+
+        circle_id = self.find_withtag(f"circle_in_{circle_name}")[0]
+        x0, y0, x1, y1 = self.coords(circle_id)
+
+        highlight_circle = self.create_oval(x0+35, y0+35, x1-35, y1-35, fill='cornsilk')
+        self.highlight_circle.append(highlight_circle)
 
     def generate_circle_names(self, circle_name: str) -> dict:
         """
@@ -241,6 +261,12 @@ class Board(tkinter.Canvas):
                 return connect4
 
         return []   # no checkers are in connect 4
+
+    def highlight_winning_connect4(self):
+        """
+        Highlights the circles that have won the game.
+        """
+        pass
 
     def new_game(self):
         """
