@@ -20,9 +20,10 @@ class Board(tkinter.Canvas):
         self.player1_checker = "yellow"
         self.player2_checker = "red"
         self.players = {
-            True: 'yellow',
-            False: 'red',
+            True: ['yellow', 'player1'],
+            False: ['red', 'player2'],
         }
+        self.game_over = False
 
         self.player1_checkers = []
         self.player2_checkers = []
@@ -57,6 +58,11 @@ class Board(tkinter.Canvas):
         """
         In the event that the cursor is clicked, a checker will be placed in the last available row if any.
         """
+        # check first to see if the game is over
+        if self.game_over:
+            return  # if the game is over do nothing
+
+        # the game is not over yet
         items_id = self.find_overlapping(event.x, event.y, event.x, event.y)
         square_id = None
 
@@ -72,8 +78,14 @@ class Board(tkinter.Canvas):
         circle_name = self.check_checker_on_file(file)
 
         if circle_name:     # an empty circle was found
-            player_color = self.players[self.player1_turn]
+            player_color = self.players[self.player1_turn][0]
             self.place_checker(player_color, circle_name)
+
+            # check whether the player has checkers in connect 4
+            connect4 = self.check_game_state(circle_name)
+            if connect4:
+                print(f"{self.players[self.player1_turn][1]} has won!")
+                self.game_over = True
 
             # give the turn to the other player
             self.player1_turn = not self.player1_turn
@@ -146,11 +158,89 @@ class Board(tkinter.Canvas):
             "nw": nw,
         }
 
-    def check_game_state(self):
+    def get_checker(self, circle_name: str) -> tuple:
+        """
+        Returns tuple(checker_id, checker_color) in the circle_name.
+
+        If there exists no checker in that circle, -> ()
+        """
+        checker_id = self.find_withtag(f"checker_in_{circle_name}")[0]
+        if checker_id:
+            checker_color = self.itemconfig(checker_id)['fill']
+            return checker_id, checker_color
+
+        return ()   # if there isn't a checker, return an empty tuple
+
+    def check_connect_4(self, circle_name: str, dir1: list, dir2: list) -> list:
+        """
+        Given 2 lists of direction, this function checks if there exists any checkers that are in connect 4.
+        If there aren't any -> [](return an empty list)
+        """
+        connect_4 = [circle_name]   # currently there is one item
+        count = 1
+
+        checker_id, checker_color = self.get_checker(circle_name)
+
+        for circle in dir1:
+            # check if there is a checker
+            if self.find_withtag(f"checker_in_{circle}"):
+                # check the color
+                _, color = self.get_checker(circle)
+                if color == checker_color:
+                    count += 1
+                    connect_4.append(circle)
+                else:
+                    break
+            else:
+                break   # circle is empty
+
+            if len(connect_4) == 4:
+                return connect_4
+
+        for circle in dir2:
+            if self.find_withtag(f"checker_in_{circle}"):
+                # check the color
+                _, color = self.get_checker(circle)
+
+                if color == checker_color:
+                    count += 1
+                    connect_4.append(circle)
+                else:
+                    break
+            else:
+                break   # the circle is empty
+
+            if len(connect_4) == 4:
+                return connect_4
+
+        return []   # no checkers were found to be in connect 4
+
+    def check_game_state(self, circle_name: str):
         """
         Checks whether a player has 4 checkers in a row either horizontally, vertically or diagonally.
+
+        When a player places a checker on a circle(circle_name) this function checks if the player's checkers are
+        in connect 4.
+
+        return: `list` containing the connect 4 circle names if any (if not -> [])
         """
-        pass
+        circle_names = self.generate_circle_names(circle_name)
+
+        vertical_directions = [circle_names['n'], circle_names['s']]
+        horizontal_directions = [circle_names['e'], circle_names['w']]
+        main_diagonal = [circle_names['ne'], circle_names['sw']]
+        other_diagonal = [circle_names['nw'], circle_names['se']]
+
+        directions = [vertical_directions, horizontal_directions, main_diagonal, other_diagonal]
+
+        for direction in directions:
+            dir1, dir2 = direction
+            connect4 = self.check_connect_4(circle_name, dir1, dir2)
+
+            if connect4:
+                return connect4
+
+        return []   # no checkers are in connect 4
 
 
 if __name__ == "__main__":
