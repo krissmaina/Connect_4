@@ -152,7 +152,7 @@ class Board(tkinter.Canvas):
         circle_id = self.find_withtag(f"circle_in_{circle_name}")[0]
         x0, y0, x1, y1 = self.coords(circle_id)
 
-        highlight_circle = self.create_oval(x0+35, y0+35, x1-35, y1-35, fill='cornsilk', outline="")
+        highlight_circle = self.create_oval(x0+35, y0+35, x1-35, y1-35, fill='goldenrod', outline="")
         self.highlight_circle.append(highlight_circle)
 
     def generate_circle_names(self, circle_name: str) -> dict:
@@ -331,12 +331,24 @@ class Board(tkinter.Canvas):
         self.highlight_connect4_images = []
 
 
+class GameFrame(tkinter.Frame):
+
+    def __init__(self, window, width, height, **kwargs):
+        super().__init__(master=window, width=width, height=height, **kwargs)
+
+        self.board = Board(self, relief='sunken')
+
+    def grid(self, row, column, **kwargs):
+        super().grid(row=row, column=column, **kwargs)
+        self.board.grid(row=0, column=0, padx=20, pady=20)
+
+
 if __name__ == "__main__":
     root = tkinter.Tk()
     root.title("Connect 4 GUI")
     root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
-    board = Board(root, relief='sunken')
-    board.grid(row=0, column=0, padx=20, pady=20)
+    board1 = Board(root, relief='sunken')
+    board1.grid(row=0, column=0, padx=20, pady=20)
 
     root.mainloop()
