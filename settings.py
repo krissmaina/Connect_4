@@ -11,3 +11,5 @@ PLAYER_FRAME_HEIGHT = 50
 
 player1_name = "Trinta"
 player2_name = "Chris"
+
+BACKGROUND = 'DeepSkyBlue4'

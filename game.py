@@ -6,12 +6,12 @@ from PIL import Image, ImageTk
 class PlayerFrame(tkinter.Frame):
 
     def __init__(self, window, width, height, player_color: str, player_name: str, **kwargs):
-        super().__init__(master=window, width=width, height=height, **kwargs)
+        super().__init__(master=window, width=width, height=height, background=BACKGROUND, **kwargs)
 
-        self.canvas = tkinter.Canvas(self, width=50, height=50)
+        self.canvas = tkinter.Canvas(self, width=50, height=50, background=BACKGROUND)
         self.canvas.create_oval(5, 5, 45, 45, fill=player_color, outline="")
 
-        self.label = tkinter.Label(self, text=player_name)
+        self.label = tkinter.Label(self, text=player_name, background=BACKGROUND)
 
     def grid(self, row, column, **kwargs):
         super().grid(row=row, column=column, **kwargs)
@@ -28,7 +28,7 @@ class Board(tkinter.Canvas):
         return ImageTk.PhotoImage(image.resize((width, height)))
 
     def __init__(self, window, width=BOARD_WIDTH, height=BOARD_HEIGHT, **kwargs):
-        super().__init__(master=window, width=width, height=height, **kwargs)
+        super().__init__(master=window, width=width, height=height, background=BACKGROUND, **kwargs)
 
         self.width = width
         self.height = height
@@ -350,7 +350,7 @@ class Board(tkinter.Canvas):
 class GameFrame(tkinter.Frame):
 
     def __init__(self, window, width=BOARD_WIDTH, height=BOARD_HEIGHT+PLAYER_FRAME_HEIGHT, **kwargs):
-        super().__init__(master=window, width=width, height=height, **kwargs)
+        super().__init__(master=window, width=width, height=height, background=BACKGROUND, **kwargs)
 
         self.player1_frame = PlayerFrame(self, width=PLAYER_FRAME_WIDTH, height=PLAYER_FRAME_HEIGHT,
                                          player_color='yellow', player_name=player1_name)
@@ -370,6 +370,7 @@ if __name__ == "__main__":
     root = tkinter.Tk()
     root.title("Connect 4 GUI")
     root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
+    root.configure(background=BACKGROUND)
 
     game = GameFrame(root)
     game.grid(row=0, column=0, padx=20, pady=20)
