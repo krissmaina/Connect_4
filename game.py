@@ -8,7 +8,7 @@ class PlayerFrame(tkinter.Frame):
     def __init__(self, window, width, height, player_color: str, player_name: str, **kwargs):
         super().__init__(master=window, width=width, height=height, background=BACKGROUND, **kwargs)
 
-        self.canvas = tkinter.Canvas(self, width=50, height=50, background=BACKGROUND)
+        self.canvas = tkinter.Canvas(self, width=50, height=50, background=BACKGROUND, highlightthickness=0)
         self.canvas.create_oval(5, 5, 45, 45, fill=player_color, outline="")
 
         self.label = tkinter.Label(self, text=player_name, background=BACKGROUND)
@@ -28,7 +28,8 @@ class Board(tkinter.Canvas):
         return ImageTk.PhotoImage(image.resize((width, height)))
 
     def __init__(self, window, width=BOARD_WIDTH, height=BOARD_HEIGHT, **kwargs):
-        super().__init__(master=window, width=width, height=height, background=BACKGROUND, **kwargs)
+        super().__init__(master=window, width=width, height=height, background=BACKGROUND,
+                         highlightthickness=0, **kwargs)
 
         self.width = width
         self.height = height
