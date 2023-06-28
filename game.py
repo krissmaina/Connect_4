@@ -11,7 +11,7 @@ class PlayerFrame(tkinter.Frame):
         self.canvas = tkinter.Canvas(self, width=50, height=50, background=BACKGROUND, highlightthickness=0)
         self.canvas.create_oval(5, 5, 45, 45, fill=player_color, outline="")
 
-        self.label = tkinter.Label(self, text=player_name, background=BACKGROUND)
+        self.label = tkinter.Label(self, text=player_name, background=BACKGROUND, font=FONT)
 
     def grid(self, row, column, **kwargs):
         super().grid(row=row, column=column, **kwargs)
@@ -48,6 +48,7 @@ class Board(tkinter.Canvas):
             False: ['red', player2_name],
         }
         self.game_over = False
+        self.game_state = "**************"  # currently no one has won
 
         self.player1_checkers = []
         self.player2_checkers = []
@@ -114,12 +115,20 @@ class Board(tkinter.Canvas):
             if connect4:
                 print(f"{self.players[self.player1_turn][1]} has won!")
                 self.game_over = True
+                self.game_state = f"{self.players[self.player1_turn][1]} has won!"
 
                 # highlight the connect 4
                 self.highlight_winning_connect4(connect4)
 
             # give the turn to the other player
             self.player1_turn = not self.player1_turn
+
+            # set the game state
+            if self.game_over:
+                update_game_state(self.game_state)
+            else:
+                self.game_state = f"{self.players[self.player1_turn][1]} turn"
+                update_game_state(self.game_state)
 
     def check_checker_on_file(self, file: str):
         """
@@ -357,14 +366,30 @@ class GameFrame(tkinter.Frame):
                                          player_color='yellow', player_name=player1_name)
         self.player2_frame = PlayerFrame(self, width=PLAYER_FRAME_WIDTH, height=PLAYER_FRAME_HEIGHT,
                                          player_color='red', player_name=player2_name)
+
         self.board = Board(self, relief='sunken')
+
+        self.game_state = tkinter.StringVar()
+        self.game_state.set(self.board.game_state)
+        self.game_state_label = tkinter.Label(self, textvariable=self.game_state, background=BACKGROUND, font=FONT)
 
     def grid(self, row, column, **kwargs):
         super().grid(row=row, column=column, **kwargs)
 
         self.player1_frame.grid(row=0, column=0, sticky='w')
         self.player2_frame.grid(row=0, column=1, sticky='e')
+
         self.board.grid(row=1, column=0, columnspan=2)
+
+        self.game_state_label.grid(row=2, column=0, columnspan=2)
+
+
+def update_game_state(text: str):
+    """
+    Updates the game state.
+    Eg: Whose turn is it to move, or is the game over.
+    """
+    game.game_state.set(text)
 
 
 if __name__ == "__main__":
