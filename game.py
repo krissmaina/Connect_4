@@ -127,7 +127,7 @@ class Board(tkinter.Canvas):
             if self.game_over:
                 update_game_state(self.game_state)
             else:
-                self.game_state = f"{self.players[self.player1_turn][1]} turn"
+                self.game_state = f"{self.players[self.player1_turn][1]}'s turn"
                 update_game_state(self.game_state)
 
     def check_checker_on_file(self, file: str):
