@@ -397,6 +397,7 @@ if __name__ == "__main__":
     root.title("Connect 4 GUI")
     root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
     root.configure(background=BACKGROUND)
+    root.iconbitmap("images/connect-four.ico")
 
     game = GameFrame(root)
     game.grid(row=0, column=0, padx=20, pady=20)
