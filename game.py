@@ -43,8 +43,8 @@ class Board(tkinter.Canvas):
         self.player1_checker = "yellow"
         self.player2_checker = "red"
         self.players = {
-            True: ['yellow', 'player1'],
-            False: ['red', 'player2'],
+            True: ['yellow', player1_name],
+            False: ['red', player2_name],
         }
         self.game_over = False
 
@@ -353,9 +353,9 @@ class GameFrame(tkinter.Frame):
         super().__init__(master=window, width=width, height=height, **kwargs)
 
         self.player1_frame = PlayerFrame(self, width=PLAYER_FRAME_WIDTH, height=PLAYER_FRAME_HEIGHT,
-                                         player_color='yellow', player_name='Chris')
+                                         player_color='yellow', player_name=player1_name)
         self.player2_frame = PlayerFrame(self, width=PLAYER_FRAME_WIDTH, height=PLAYER_FRAME_HEIGHT,
-                                         player_color='red', player_name='Trinta')
+                                         player_color='red', player_name=player2_name)
         self.board = Board(self, relief='sunken')
 
     def grid(self, row, column, **kwargs):
@@ -371,10 +371,7 @@ if __name__ == "__main__":
     root.title("Connect 4 GUI")
     root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
-    connect4 = GameFrame(root)
-    connect4.grid(row=0, column=0)
-
-    # board1 = Board(root, relief='sunken')
-    # board1.grid(row=0, column=0, padx=20, pady=20)
+    game = GameFrame(root)
+    game.grid(row=0, column=0, padx=20, pady=20)
 
     root.mainloop()

@@ -8,3 +8,6 @@ BOARD_HEIGHT = SQUARE_LENGTH * 6
 
 PLAYER_FRAME_WIDTH = BOARD_WIDTH / 2
 PLAYER_FRAME_HEIGHT = 50
+
+player1_name = "Trinta"
+player2_name = "Chris"
