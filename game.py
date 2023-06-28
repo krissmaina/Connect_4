@@ -3,6 +3,22 @@ from settings import *
 from PIL import Image, ImageTk
 
 
+class PlayerFrame(tkinter.Frame):
+
+    def __init__(self, window, width, height, player_color: str, player_name: str, **kwargs):
+        super().__init__(master=window, width=width, height=height, **kwargs)
+
+        self.canvas = tkinter.Canvas(self, width=50, height=50)
+        self.canvas.create_oval(5, 5, 45, 45, fill=player_color, outline="")
+
+        self.label = tkinter.Label(self, text=player_name)
+
+    def grid(self, row, column, **kwargs):
+        super().grid(row=row, column=column, **kwargs)
+        self.canvas.grid(row=0, column=0)
+        self.label.grid(row=0, column=1)
+
+
 class Board(tkinter.Canvas):
 
     @staticmethod
@@ -333,14 +349,21 @@ class Board(tkinter.Canvas):
 
 class GameFrame(tkinter.Frame):
 
-    def __init__(self, window, width, height, **kwargs):
+    def __init__(self, window, width=BOARD_WIDTH, height=BOARD_HEIGHT+PLAYER_FRAME_HEIGHT, **kwargs):
         super().__init__(master=window, width=width, height=height, **kwargs)
 
+        self.player1_frame = PlayerFrame(self, width=PLAYER_FRAME_WIDTH, height=PLAYER_FRAME_HEIGHT,
+                                         player_color='yellow', player_name='Chris')
+        self.player2_frame = PlayerFrame(self, width=PLAYER_FRAME_WIDTH, height=PLAYER_FRAME_HEIGHT,
+                                         player_color='red', player_name='Trinta')
         self.board = Board(self, relief='sunken')
 
     def grid(self, row, column, **kwargs):
         super().grid(row=row, column=column, **kwargs)
-        self.board.grid(row=0, column=0, padx=20, pady=20)
+
+        self.player1_frame.grid(row=0, column=0, sticky='w')
+        self.player2_frame.grid(row=0, column=1, sticky='e')
+        self.board.grid(row=1, column=0, columnspan=2)
 
 
 if __name__ == "__main__":
@@ -348,7 +371,10 @@ if __name__ == "__main__":
     root.title("Connect 4 GUI")
     root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
-    board1 = Board(root, relief='sunken')
-    board1.grid(row=0, column=0, padx=20, pady=20)
+    connect4 = GameFrame(root)
+    connect4.grid(row=0, column=0)
+
+    # board1 = Board(root, relief='sunken')
+    # board1.grid(row=0, column=0, padx=20, pady=20)
 
     root.mainloop()
