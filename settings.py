@@ -14,3 +14,5 @@ player2_name = "Chris"
 
 BACKGROUND = 'DeepSkyBlue4'
 FONT = ("Comic Sans MS", 30)
+
+BUTTON_BG = "RoyalBlue"

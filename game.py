@@ -41,6 +41,7 @@ class Board(tkinter.Canvas):
         self.circles = {}
 
         self.player1_turn = True
+        self.player1_start = True   # this will be a control variable for when a new game is started
         self.player1_checker = "yellow"
         self.player2_checker = "red"
         self.players = {
@@ -48,7 +49,7 @@ class Board(tkinter.Canvas):
             False: ['red', player2_name],
         }
         self.game_over = False
-        self.game_state = "**************"  # currently no one has won
+        self.game_state = f"{self.players[self.player1_turn][1]}'s turn"  # currently no one has won
 
         self.player1_checkers = []
         self.player2_checkers = []
@@ -343,7 +344,12 @@ class Board(tkinter.Canvas):
 
         self.player1_checkers, self.player2_checkers = [], []
         self.game_over = False
-        self.player1_turn = True
+        self.player1_start = not self.player1_start
+        self.player1_turn = self.player1_start
+
+        # set the game state
+        self.game_state = f"{self.players[self.player1_turn][1]}'s turn"
+        update_game_state(self.game_state)
 
         for image_id in self.highlight_connect4_images:
             self.delete(image_id)
@@ -373,6 +379,11 @@ class GameFrame(tkinter.Frame):
         self.game_state.set(self.board.game_state)
         self.game_state_label = tkinter.Label(self, textvariable=self.game_state, background=BACKGROUND, font=FONT)
 
+        self.new_game_button = tkinter.Button(self, text="New Game", font=("Comic Sans MS", 10),
+                                              command=self.new_game_command, bg=BUTTON_BG)
+        self.quit_button = tkinter.Button(self, text="Quit", font=("Comic Sans MS", 10),
+                                          bg=BUTTON_BG, command=root.destroy)
+
     def grid(self, row, column, **kwargs):
         super().grid(row=row, column=column, **kwargs)
 
@@ -382,6 +393,13 @@ class GameFrame(tkinter.Frame):
         self.board.grid(row=1, column=0, columnspan=2)
 
         self.game_state_label.grid(row=2, column=0, columnspan=2)
+
+        self.new_game_button.grid(row=3, column=0, sticky='w')
+        self.quit_button.grid(row=3, column=1, sticky='e')
+
+    def new_game_command(self):
+        """Starts a new game."""
+        self.board.new_game()
 
 
 def update_game_state(text: str):
