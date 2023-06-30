@@ -12,6 +12,9 @@ PLAYER_FRAME_HEIGHT = 50
 player1_name = "Trinta"
 player2_name = "Chris"
 
+player1_color = 'yellow'
+player2_color = 'red'
+
 BACKGROUND = 'DeepSkyBlue4'
 FONT = ("Comic Sans MS", 30)
 

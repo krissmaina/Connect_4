@@ -42,11 +42,12 @@ class Board(tkinter.Canvas):
 
         self.player1_turn = True
         self.player1_start = True   # this will be a control variable for when a new game is started
-        self.player1_checker = "yellow"
-        self.player2_checker = "red"
+
+        self.player1_checker = player1_color
+        self.player2_checker = player2_color
         self.players = {
-            True: ['yellow', player1_name],
-            False: ['red', player2_name],
+            True: [self.player1_checker, player1_name],
+            False: [self.player2_checker, player2_name],
         }
         self.game_over = False
         self.game_state = f"{self.players[self.player1_turn][1]}'s turn"  # currently no one has won
